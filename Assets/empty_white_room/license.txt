@@ -1,0 +1,11 @@
+Model Information:
+* title:	Empty White Room
+* source:	https://sketchfab.com/3d-models/empty-white-room-2a1ad74395fb4879bcdcd4b469c90604
+* author:	che02 (https://sketchfab.com/che02)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Empty White Room" (https://sketchfab.com/3d-models/empty-white-room-2a1ad74395fb4879bcdcd4b469c90604) by che02 (https://sketchfab.com/che02) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
