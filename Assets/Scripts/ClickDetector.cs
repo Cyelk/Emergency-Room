@@ -14,7 +14,6 @@ public class ClickDetector : MonoBehaviour, IPointerClickHandler
         
         if (handler != null)
         {
-            // ΚΑΛΕΙ ΤΟ HandleClick ΑΝΤΙ ΤΟΥ OnMouseDown
             handler.HandleClick();
         }
         else

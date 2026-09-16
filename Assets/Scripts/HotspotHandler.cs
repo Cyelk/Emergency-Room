@@ -10,20 +10,24 @@ public class HotspotHandler : MonoBehaviour
         if (ehrManager == null)
         {
             ehrManager = FindObjectOfType<EHRManager>();
+            Debug.Log("🔍 EHRManager βρέθηκε: " + (ehrManager != null ? "ΝΑΙ" : "ΟΧΙ"));
         }
     }
     
-    // ΑΦΑΙΡΕΣΕ ΤΟ void OnMouseDown() - ΔΕΝ το χρειαζόμαστε πια!
-    // Το ClickDetector θα καλεί τη συνάρτηση HandleClick() αντί για OnMouseDown
-    
-    // Αυτή τη συνάρτηση θα την καλεί το ClickDetector
     public void HandleClick()
     {
-        Debug.Log("🖱️ Κλικ στο: " + gameObject.name + " (Hotspot: " + hotspotName + ")");
+        Debug.Log("🖱️ HandleClick στο: " + gameObject.name + " (Hotspot: " + hotspotName + ")");
+        
+        if (GameLogger.Instance != null)
+            GameLogger.Instance.LogEvent("HOTSPOT_INTERACTION", "Κλικ στο: " + hotspotName);
         
         if (ehrManager != null)
         {
             ehrManager.ToggleEHR(gameObject, hotspotName);
+        }
+        else
+        {
+            Debug.LogError("❌ EHRManager δεν είναι συνδεδεμένο!");
         }
     }
 }
