@@ -48,6 +48,27 @@ public class FormConfig
 {
     public string title;
     public List<string> fields;
+    public FormValidation validation;
+}
+
+[Serializable]
+public class FormValidation
+{
+    public FieldValidation observation;
+    public FieldValidation fiO2_setting;
+    public FieldValidation recipient;
+    public FieldValidation outcome;
+    public FieldValidation reason;
+}
+
+[Serializable]
+public class FieldValidation
+{
+    public string type;
+    public List<string> keywords;
+    public List<string> expected;
+    public int score_if_valid;
+    public int score_if_invalid;
 }
 
 [Serializable]
@@ -68,7 +89,6 @@ public class GlobalRule
 [Serializable]
 public class RuleCondition
 {
-    // Θα το επεκτείνουμε αργότερα
 }
 
 [Serializable]
@@ -85,22 +105,19 @@ public class RuleEffect
 public class NodeData
 {
     public string id;
-    public string type; // message, decision, gate, end
+    public string type;
     public string text;
     public string description;
     public string next_node_id;
     
-    // Decision
     public List<OptionData> options;
     public TimeoutData timeout;
     
-    // Gate
     public GateRequirements gate_requirements;
     public string feedback_blocked;
     public string feedback_success;
     public EffectsOnPass effects_on_pass;
     
-    // End
     public DebriefConfig debrief_config;
 }
 

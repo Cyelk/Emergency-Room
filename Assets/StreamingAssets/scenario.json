@@ -12,15 +12,51 @@
     "forms": {
       "assessment_form": {
         "title": "Κλινική Αξιολόγηση",
-        "fields": ["observation", "skin_color", "consciousness"]
+        "fields": ["observation"],
+        "validation": {
+          "observation": {
+            "type": "keywords",
+            "keywords": ["κυάνωση", "ταχύπνοια", "δύσπνοια", "αποκορεσμός", "υποξαιμία"],
+            "score_if_valid": 10,
+            "score_if_invalid": -5
+          }
+        }
       },
       "intervention_form": {
         "title": "Παρεμβάσεις / Ρυθμίσεις",
-        "fields": ["device", "fiO2_setting", "flow_rate"]
+        "fields": ["fiO2_setting"],
+        "validation": {
+          "fiO2_setting": {
+            "type": "expected",
+            "expected": ["100", "100%"],
+            "score_if_valid": 10,
+            "score_if_invalid": -5
+          }
+        }
       },
       "communication_log": {
         "title": "Ημερολόγιο Επικοινωνίας",
-        "fields": ["recipient", "reason", "outcome"]
+        "fields": ["recipient", "outcome", "reason"],
+        "validation": {
+          "recipient": {
+            "type": "keywords",
+            "keywords": ["ιατρός", "εφημερεύων", "γιατρός", "doctor"],
+            "score_if_valid": 10,
+            "score_if_invalid": -3
+          },
+          "outcome": {
+            "type": "keywords",
+            "keywords": ["κλήση", "ενημέρωση", "αναφορά", "επικοινωνία"],
+            "score_if_valid": 5,
+            "score_if_invalid": -3
+          },
+          "reason": {
+            "type": "keywords",
+            "keywords": ["επιδείνωση", "υποξαιμία", "κλιμάκωση", "ανάγκη", "αστάθεια"],
+            "score_if_valid": 10,
+            "score_if_invalid": -3
+          }
+        }
       }
     }
   },
@@ -53,7 +89,7 @@
             "target_hotspot": "hs_patient",
             "effects": {
               "score_delta": 10,
-              "state_update": { "flags.assessment_complete": true },
+              "state_update": { "flags_assessment_complete": true },
               "toast": "Παρατηρείς κυάνωση και ταχύπνοια."
             },
             "next_node_id": "n3_intervention"
@@ -89,7 +125,7 @@
             "label": "Αύξηση FiO2 (100%)",
             "target_hotspot": "hs_ventilator",
             "effects": {
-              "state_update": { "flags.oxygen_adjusted": true },
+              "state_update": { "flags_oxygen_adjusted": true },
               "vitals_update": { "spo2": 94, "hr": 100 },
               "score_delta": 20,
               "toast": "Η ρύθμιση έγινε. Το SpO2 ανεβαίνει."
@@ -124,7 +160,7 @@
         "feedback_blocked": "Πρέπει να συμπληρώσεις το EHR για να προχωρήσεις.",
         "feedback_success": "Η τεκμηρίωση αποθηκεύτηκε.",
         "effects_on_pass": {
-          "state_update": { "flags.documentation_1_complete": true },
+          "state_update": { "flags_documentation_1_complete": true },
           "score_delta": 10
         },
         "next_node_id": "n5_reassessment"
@@ -145,7 +181,7 @@
             "label": "Κλήση Ιατρού (Κλιμάκωση)",
             "target_hotspot": "hs_call",
             "effects": {
-              "state_update": { "flags.escalation_complete": true },
+              "state_update": { "flags_escalation_complete": true },
               "score_delta": 10,
               "toast": "Έγινε κλήση στον εφημερεύοντα."
             },
@@ -176,7 +212,7 @@
         },
         "feedback_blocked": "Εκκρεμεί η καταγραφή της κλήσης στο EHR.",
         "effects_on_pass": {
-          "state_update": { "flags.documentation_2_complete": true },
+          "state_update": { "flags_documentation_2_complete": true },
           "score_delta": 5
         },
         "next_node_id": "n8_end_scenario"

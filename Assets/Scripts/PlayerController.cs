@@ -7,7 +7,6 @@ public class PlayerController : MonoBehaviour
     public float mouseSensitivity = 2f;
     public float gravity = -9.81f;
     
-    // Έλεγχος κίνησης
     public bool canMove = true;
     public bool canLook = true;
     
@@ -27,21 +26,24 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
-        // Έλεγξε αν το EHR είναι ανοιχτό
+        // Έλεγξε αν το EHR ή το Help είναι ανοιχτό
         EHRManager ehr = FindObjectOfType<EHRManager>();
         bool ehrOpen = ehr != null && ehr.IsEHRPanelOpen();
         
-        // Αν το EHR είναι ανοιχτό, ΜΗΝ διαβάζεις καθόλου input
-        if (ehrOpen)
+        bool helpOpen = false;
+        if (HelpManager.Instance != null)
+            helpOpen = HelpManager.Instance.IsHelpOpen();
+        
+        // Αν το EHR ή το Help είναι ανοιχτό, ΜΗΝ διαβάζεις input
+        if (ehrOpen || helpOpen)
         {
-            // Μόνο βαρύτητα
             if (controller.isGrounded && velocity.y < 0)
             {
                 velocity.y = -2f;
             }
             velocity.y += gravity * Time.deltaTime;
             controller.Move(velocity * Time.deltaTime);
-            return; // ΣΤΑΜΑΤΑ ΕΔΩ
+            return;
         }
         
         // === ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΠΟΝΤΙΚΙ ===
@@ -92,7 +94,7 @@ public class PlayerController : MonoBehaviour
             Cursor.visible = true;
         }
         
-        if (!ehrOpen && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame 
+        if (!ehrOpen && !helpOpen && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame 
             && Cursor.lockState == CursorLockMode.None)
         {
             Cursor.lockState = CursorLockMode.Locked;

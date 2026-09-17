@@ -6,9 +6,11 @@ using UnityEngine.EventSystems;
 
 public class EHRManager : MonoBehaviour
 {
+    public static EHRManager Instance;
+    
     [Header("Main Panel")]
     public GameObject ehrPanel;
-    public Button submitButton;
+    public Button SubmitButton;
     public TextMeshProUGUI statusText;
     
     [Header("Assessment Fields")]
@@ -33,10 +35,16 @@ public class EHRManager : MonoBehaviour
     public bool outcomeSubmitted = false;
     public bool reasonSubmitted = false;
     
+    [Header("Submitted Values")]
+    public string submittedObservation = "";
+    public string submittedFiO2 = "";
+    public string submittedRecipient = "";
+    public string submittedOutcome = "";
+    public string submittedReason = "";
+    
     private bool isPanelOpen = false;
     private GameObject currentHotspot = null;
-    public static EHRManager Instance;
-
+    
     void Awake()
     {
         if (Instance == null) Instance = this;
@@ -128,7 +136,6 @@ public class EHRManager : MonoBehaviour
             }
             
             Debug.Log("📂 EHR έκλεισε");
-
         }
     }
     
@@ -150,6 +157,7 @@ public class EHRManager : MonoBehaviour
         string fiO2 = fiO2Input != null ? fiO2Input.text : "";
         string recipient = recipientInput != null ? recipientInput.text : "";
         string outcome = outcomeInput != null ? outcomeInput.text : "";
+        string reason = reasonInput != null ? reasonInput.text : "";
         
         bool hasError = false;
         string missingFields = "";
@@ -164,14 +172,28 @@ public class EHRManager : MonoBehaviour
                 missingFields += "• Παρατήρηση\n";
                 hasError = true;
             }
-            else observationSubmitted = true;
+            else
+            {
+                observationSubmitted = true;
+                submittedObservation = observation;
+                
+                if (ValidationManager.Instance != null)
+                    ValidationManager.Instance.ValidateField("observation", observation);
+            }
             
             if (string.IsNullOrEmpty(fiO2))
             {
                 missingFields += "• FiO2\n";
                 hasError = true;
             }
-            else fiO2Submitted = true;
+            else
+            {
+                fiO2Submitted = true;
+                submittedFiO2 = fiO2;
+                
+                if (ValidationManager.Instance != null)
+                    ValidationManager.Instance.ValidateField("fiO2_setting", fiO2);
+            }
         }
         
         if (communicationActive)
@@ -181,19 +203,41 @@ public class EHRManager : MonoBehaviour
                 missingFields += "• Παραλήπτης\n";
                 hasError = true;
             }
-            else recipientSubmitted = true;
+            else
+            {
+                recipientSubmitted = true;
+                submittedRecipient = recipient;
+                
+                if (ValidationManager.Instance != null)
+                    ValidationManager.Instance.ValidateField("recipient", recipient);
+            }
             
             if (string.IsNullOrEmpty(outcome))
             {
                 missingFields += "• Αποτέλεσμα\n";
                 hasError = true;
             }
-            else outcomeSubmitted = true;
+            else
+            {
+                outcomeSubmitted = true;
+                submittedOutcome = outcome;
+                
+                if (ValidationManager.Instance != null)
+                    ValidationManager.Instance.ValidateField("outcome", outcome);
+            }
+            
+            if (!string.IsNullOrEmpty(reason))
+            {
+                reasonSubmitted = true;
+                submittedReason = reason;
+                
+                if (ValidationManager.Instance != null)
+                    ValidationManager.Instance.ValidateField("reason", reason);
+            }
         }
         
         if (!assessmentActive && !communicationActive)
         {
-            Debug.LogWarning("⚠️ Κανένα field group δεν είναι ενεργό!");
             return;
         }
         
@@ -240,16 +284,20 @@ public class EHRManager : MonoBehaviour
         outcomeSubmitted = false;
         reasonSubmitted = false;
         
+        submittedObservation = "";
+        submittedFiO2 = "";
+        submittedRecipient = "";
+        submittedOutcome = "";
+        submittedReason = "";
+        
         if (observationInput != null) observationInput.text = "";
         if (fiO2Input != null) fiO2Input.text = "";
         if (recipientInput != null) recipientInput.text = "";
         if (outcomeInput != null) outcomeInput.text = "";
         if (reasonInput != null) reasonInput.text = "";
+        
+        if (ValidationManager.Instance != null)
+            ValidationManager.Instance.ResetValidation();
     }
-    
-    void UpdateStatus(string message)
-    {
-        if (statusText != null)
-            statusText.text = message;
-    }
+
 }

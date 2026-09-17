@@ -47,14 +47,11 @@ public class DebriefManager : MonoBehaviour
     {
         if (debriefPanel == null) return;
         
-        // Κρύψε το EHR Panel
         if (ehrPanel != null)
             ehrPanel.SetActive(false);
         
-        // Εμφάνισε το Debrief
         debriefPanel.SetActive(true);
         
-        // Ενημέρωσε τα δεδομένα
         UpdateScore();
         UpdateDecisionPath();
         UpdateDocumentation();
@@ -66,12 +63,19 @@ public class DebriefManager : MonoBehaviour
     {
         if (scoreText != null && ScenarioEngine.Instance != null)
         {
-            int score = ScenarioEngine.Instance.currentScore;
-            scoreText.text = "Σκορ: " + score + " / 100";
+            int scenarioScore = ScenarioEngine.Instance.currentScore;
+            int validationScore = 0;
             
-            // Χρώμα ανάλογα με το σκορ
-            if (score >= 80) scoreText.color = Color.green;
-            else if (score >= 50) scoreText.color = Color.yellow;
+            if (ValidationManager.Instance != null)
+                validationScore = ValidationManager.Instance.validationScore;
+            
+            int totalScore = scenarioScore + validationScore;
+            
+            scoreText.text = "Σκορ: " + totalScore + " / 100\n" +
+                            "(Σενάριο: " + scenarioScore + " | Τεκμηρίωση: " + validationScore + ")";
+            
+            if (totalScore >= 80) scoreText.color = Color.green;
+            else if (totalScore >= 50) scoreText.color = Color.yellow;
             else scoreText.color = Color.red;
         }
     }
@@ -94,37 +98,33 @@ public class DebriefManager : MonoBehaviour
     
     void UpdateDocumentation()
     {
-        if (documentationText == null || GameLogger.Instance == null) return;
-        
-        var entries = GameLogger.Instance.GetLogEntries();
+        if (documentationText == null) return;
         
         string doc = "📝 Τεκμηρίωση:\n";
         
-        // Έλεγξε αν έγιναν submit
-        bool assessmentSubmitted = entries.Any(e => e.eventType == "EHR_SUBMIT" && e.details.Contains("Επιτυχής"));
-        bool gate1Passed = entries.Any(e => e.eventType == "GATE_PASSED" && e.details.Contains("n4"));
-        bool gate2Passed = entries.Any(e => e.eventType == "GATE_PASSED" && e.details.Contains("n7"));
-        
-        doc += gate1Passed ? "  ✅ Assessment Form (Gate 1)\n" : "  ❌ Assessment Form (Gate 1)\n";
-        doc += gate2Passed ? "  ✅ Communication Log (Gate 2)\n" : "  ❌ Communication Log (Gate 2)\n";
-        
-        // Λάθη
-        var errors = entries.Where(e => 
-            e.eventType == "TIMEOUT" || 
-            e.eventType == "GATE_BLOCKED" ||
-            (e.eventType == "OPTION_SELECTED" && e.details.Contains("-"))).ToList();
-        
-        if (errors.Count > 0)
+        EHRManager ehr = EHRManager.Instance;
+        if (ehr != null)
         {
-            doc += "\n⚠️ Λάθη:\n";
-            foreach (var error in errors)
-            {
-                doc += "  • " + error.details + "\n";
-            }
+            if (!string.IsNullOrEmpty(ehr.submittedObservation))
+                doc += "\n  Παρατήρηση: \"" + ehr.submittedObservation + "\"\n";
+            if (!string.IsNullOrEmpty(ehr.submittedFiO2))
+                doc += "  FiO2: \"" + ehr.submittedFiO2 + "\"\n";
+            if (!string.IsNullOrEmpty(ehr.submittedRecipient))
+                doc += "  Παραλήπτης: \"" + ehr.submittedRecipient + "\"\n";
+            if (!string.IsNullOrEmpty(ehr.submittedOutcome))
+                doc += "  Αποτέλεσμα: \"" + ehr.submittedOutcome + "\"\n";
+            if (!string.IsNullOrEmpty(ehr.submittedReason))
+                doc += "  Αιτία: \"" + ehr.submittedReason + "\"\n";
         }
-        else
+        
+        if (ValidationManager.Instance != null)
         {
-            doc += "\n✅ Δεν υπάρχουν λάθη!\n";
+            doc += "\n📊 Έλεγχος Τεκμηρίωσης:\n";
+            foreach (var log in ValidationManager.Instance.validationLog)
+            {
+                doc += "  " + log + "\n";
+            }
+            doc += "\n  Σύνολο: " + ValidationManager.Instance.validationScore + " πόντοι\n";
         }
         
         documentationText.text = doc;
@@ -145,7 +145,6 @@ public class DebriefManager : MonoBehaviour
     {
         Debug.Log("🔄 Επανεκκίνηση...");
         
-        // Επαναφορά όλων
         if (ScenarioEngine.Instance != null)
             ScenarioEngine.Instance.currentScore = 0;
         
@@ -158,15 +157,15 @@ public class DebriefManager : MonoBehaviour
         if (EHRManager.Instance != null)
             EHRManager.Instance.ResetFields();
         
-        // Κρύψε το debrief
+        if (ValidationManager.Instance != null)
+            ValidationManager.Instance.ResetValidation();
+        
         if (debriefPanel != null)
             debriefPanel.SetActive(false);
         
-        // Ξανάνοιξε το EHR
         if (ehrPanel != null)
             ehrPanel.SetActive(true);
         
-        // Ξεκίνα το σενάριο από την αρχή
         if (ScenarioEngine.Instance != null)
             ScenarioEngine.Instance.GoToNode("n1_start");
     }
