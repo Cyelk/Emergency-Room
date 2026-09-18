@@ -5,20 +5,23 @@ public class ClickDetector : MonoBehaviour, IPointerClickHandler
 {
     public void OnPointerClick(PointerEventData eventData)
     {
-        eventData.Use();
+        // Αν το Selection Panel είναι ανοιχτό, αγνόησέ το
+        if (ScenarioSelectionManager.Instance != null && ScenarioSelectionManager.Instance.IsPanelOpen())
+        {
+            Debug.Log("🖱️ Selection ανοιχτό - Αγνοώ το click");
+            return;
+        }
         
-        Debug.Log("🖱️ ClickDetector: " + gameObject.name);
+        // Αν το Help είναι ανοιχτό, αγνόησέ το
+        if (HelpManager.Instance != null && HelpManager.Instance.IsHelpOpen())
+            return;
+        
+        eventData.Use();
         
         HotspotHandler handler = GetComponent<HotspotHandler>();
         if (handler == null) handler = GetComponentInParent<HotspotHandler>();
         
         if (handler != null)
-        {
             handler.HandleClick();
-        }
-        else
-        {
-            Debug.Log("⚠️ Το " + gameObject.name + " δεν έχει HotspotHandler");
-        }
     }
 }

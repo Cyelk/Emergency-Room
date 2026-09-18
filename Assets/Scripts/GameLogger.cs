@@ -33,7 +33,21 @@ public class GameLogger : MonoBehaviour
     
     public void ExportToJSON()
     {
-        string path = Path.Combine(Application.dataPath, "Logs/gamelog.json");
+        string folderPath = Path.Combine(Application.dataPath, "Logs");
+        if (!Directory.Exists(folderPath))
+            Directory.CreateDirectory(folderPath);
+        
+        // Μοναδικό όνομα με timestamp
+        string timestamp = System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+        string scenarioName = "scenario";
+        
+        if (ScenarioLoader.Instance != null && ScenarioLoader.Instance.CurrentScenario != null)
+        {
+            scenarioName = ScenarioLoader.Instance.CurrentScenario.scenario_id;
+        }
+        
+        string fileName = "gamelog_" + scenarioName + "_" + timestamp + ".json";
+        string path = Path.Combine(folderPath, fileName);
         
         LogWrapper wrapper = new LogWrapper();
         wrapper.entries = logEntries;

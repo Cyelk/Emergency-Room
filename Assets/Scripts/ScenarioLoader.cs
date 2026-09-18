@@ -14,7 +14,6 @@ public class ScenarioLoader : MonoBehaviour
         else
             Destroy(gameObject);
         
-        // Φόρτωσε το σενάριο ΑΜΕΣΩΣ
         LoadScenario("scenario.json");
     }
     

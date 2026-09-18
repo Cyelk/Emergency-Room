@@ -1,0 +1,238 @@
+{
+  "scenario_id": "anaphylaxis_scenario_1",
+  "title": "Αναφυλαξία στη ΜΕΘ",
+  "hotspots": {
+    "hs_monitor": { "id": "hs_monitor", "label": "Μόνιτορ Ζωτικών (Monitor)" },
+    "hs_patient": { "id": "hs_patient", "label": "Ασθενής/Κλίνη (Patient)" },
+    "hs_ventilator": { "id": "hs_ventilator", "label": "Αναπνευστήρας (Ventilator)" },
+    "hs_ehr": { "id": "hs_ehr", "label": "Τερματικό EHR (e-Health)" },
+    "hs_call": { "id": "hs_call", "label": "Κουμπί Κλήσης (Call Button)" }
+  },
+  "ehr_config": {
+    "forms": {
+      "assessment_form": {
+        "title": "Κλινική Αξιολόγηση",
+        "fields": ["observation"],
+        "validation": {
+          "observation": {
+            "type": "keywords",
+            "keywords": ["υποταση", "ταχυκαρδια", "εξανθημα", "αναφυλαξια", "αλλεργια", "δυσπνοια"],
+            "score_if_valid": 10,
+            "score_if_invalid": -5
+          }
+        }
+      },
+      "intervention_form": {
+        "title": "Παρεμβάσεις / Ρυθμίσεις",
+        "fields": ["fiO2_setting"],
+        "validation": {
+          "fiO2_setting": {
+            "type": "expected",
+            "expected": ["50", "50%"],
+            "score_if_valid": 10,
+            "score_if_invalid": -5
+          }
+        }
+      },
+      "communication_log": {
+        "title": "Ημερολόγιο Επικοινωνίας",
+        "fields": ["recipient", "outcome", "reason"],
+        "validation": {
+          "recipient": {
+            "type": "keywords",
+            "keywords": ["ιατρος", "εφημερευων", "γιατρος", "doctor", "αναισθησιολογος"],
+            "score_if_valid": 5,
+            "score_if_invalid": -3
+          },
+          "outcome": {
+            "type": "keywords",
+            "keywords": ["κληση", "ενημερωση", "αναφορα", "επικοινωνια", "βοηθεια"],
+            "score_if_valid": 5,
+            "score_if_invalid": -3
+          },
+          "reason": {
+            "type": "keywords",
+            "keywords": ["αναφυλαξια", "αλλεργια", "υποταση", "αδρεναλινη", "επειγον"],
+            "score_if_valid": 5,
+            "score_if_invalid": -3
+          }
+        }
+      }
+    }
+  },
+  "rules": {
+    "global_rules": [
+      {
+        "id": "rule_hypotension_alarm",
+        "condition": { "vitals.bpSystolic": { "lt": 90 } },
+        "effects": [
+          { "type": "ui_visual", "target": "hs_monitor", "state": "blinking_red" },
+          { "type": "ui_toast", "style": "danger", "message": "ΣΥΝΑΓΕΡΜΟΣ: Υπόταση (BP < 90 mmHg)" }
+        ]
+      }
+    ],
+    "nodes": [
+      {
+        "id": "n1_start",
+        "type": "message",
+        "text": "Βρίσκεστε στη ΜΕΘ. Ο ασθενής στην κλίνη 2 εμφανίζει ξαφνική δύσπνοια, εξάνθημα και υπόταση μετά από χορήγηση αντιβιοτικού. Το μόνιτορ χτυπάει (BP: 80/50, HR: 130).",
+        "next_node_id": "n2_initial_decision"
+      },
+      {
+        "id": "n2_initial_decision",
+        "type": "decision",
+        "text": "Ποια είναι η πρώτη σου ενέργεια;",
+        "options": [
+          {
+            "id": "opt_assess",
+            "label": "Άμεση Αξιολόγηση Ασθενούς",
+            "target_hotspot": "hs_patient",
+            "effects": {
+              "score_delta": 10,
+              "state_update": { "flags_assessment_complete": true },
+              "toast": "Παρατηρείς εξάνθημα, οίδημα και δύσπνοια."
+            },
+            "next_node_id": "n3_intervention"
+          },
+          {
+            "id": "opt_check_monitor",
+            "label": "Έλεγχος Ιστορικού στο Μόνιτορ",
+            "target_hotspot": "hs_monitor",
+            "effects": {
+              "score_delta": 5,
+              "toast": "Βλέπεις απότομη πτώση πίεσης τα τελευταία 2 λεπτά."
+            },
+            "next_node_id": "n3_intervention"
+          }
+        ],
+        "timeout": {
+          "seconds": 20,
+          "on_timeout_effects": {
+            "vitals_update": { "spo2": 85, "hr": 140 },
+            "score_delta": -10,
+            "toast": "Καθυστέρηση! Η κατάσταση επιδεινώνεται."
+          },
+          "next_node_id": "n3_intervention"
+        }
+      },
+      {
+        "id": "n3_intervention",
+        "type": "decision",
+        "text": "Η κλινική εικόνα είναι συμβατή με αναφυλαξία. Πρέπει να δράσεις άμεσα.",
+        "options": [
+          {
+            "id": "opt_adrenaline",
+            "label": "Χορήγηση Αδρεναλίνης (IM)",
+            "target_hotspot": "hs_patient",
+            "effects": {
+              "state_update": { "flags_adrenaline_given": true },
+              "vitals_update": { "spo2": 94, "hr": 110 },
+              "score_delta": 20,
+              "toast": "Η αδρεναλίνη χορηγήθηκε. Η πίεση αρχίζει να ανεβαίνει."
+            },
+            "next_node_id": "n4_gate_documentation_1"
+          },
+          {
+            "id": "opt_wait",
+            "label": "Αναμονή για αλλεργιολόγο",
+            "target_hotspot": "hs_monitor",
+            "effects": {
+              "vitals_update": { "spo2": 82, "hr": 145 },
+              "score_delta": -20,
+              "toast": "Κρίσιμο λάθος. Ο ασθενής επιδεινώνεται."
+            },
+            "next_node_id": "n4_gate_documentation_1"
+          }
+        ]
+      },
+      {
+        "id": "n4_gate_documentation_1",
+        "type": "gate",
+        "text": "GATE: Τεκμηρίωση Αξιολόγησης & Παρέμβασης.",
+        "description": "Το σύστημα μπλοκάρει τη συνέχεια μέχρι να συμπληρωθούν τα πεδία στο EHR.",
+        "gate_requirements": {
+          "target_hotspot": "hs_ehr",
+          "required_forms": [
+            { "form_id": "assessment_form", "fields": ["observation"] },
+            { "form_id": "intervention_form", "fields": ["fiO2_setting"] }
+          ]
+        },
+        "feedback_blocked": "Πρέπει να συμπληρώσεις το EHR για να προχωρήσεις.",
+        "feedback_success": "Η τεκμηρίωση αποθηκεύτηκε.",
+        "effects_on_pass": {
+          "state_update": { "flags_documentation_1_complete": true },
+          "score_delta": 10
+        },
+        "next_node_id": "n5_reassessment"
+      },
+      {
+        "id": "n5_reassessment",
+        "type": "message",
+        "text": "5 λεπτά αργότερα... Η κατάσταση έχει σταθεροποιηθεί (BP: 100/60, HR: 100), αλλά ο ασθενής παραμένει δύσπνοος.",
+        "next_node_id": "n6_escalation_decision"
+      },
+      {
+        "id": "n6_escalation_decision",
+        "type": "decision",
+        "text": "Χρειάζεται περαιτέρω ενέργεια;",
+        "options": [
+          {
+            "id": "opt_call_doc",
+            "label": "Κλήση Ιατρού (Κλιμάκωση)",
+            "target_hotspot": "hs_call",
+            "effects": {
+              "state_update": { "flags_escalation_complete": true },
+              "score_delta": 10,
+              "toast": "Έγινε κλήση στον εφημερεύοντα."
+            },
+            "next_node_id": "n7_gate_documentation_2"
+          },
+          {
+            "id": "opt_wait",
+            "label": "Όχι, συνεχίζω παρακολούθηση",
+            "target_hotspot": "hs_monitor",
+            "effects": {
+              "score_delta": 0,
+              "toast": "Συνεχίζεις την παρακολούθηση."
+            },
+            "next_node_id": "n8_end_scenario"
+          }
+        ]
+      },
+      {
+        "id": "n7_gate_documentation_2",
+        "type": "gate",
+        "text": "GATE: Καταγραφή Επικοινωνίας.",
+        "description": "Κατάγραψε την κλήση στο Communication Log.",
+        "gate_requirements": {
+          "target_hotspot": "hs_ehr",
+          "required_forms": [
+            { "form_id": "communication_log", "fields": ["recipient", "outcome"] }
+          ]
+        },
+        "feedback_blocked": "Εκκρεμεί η καταγραφή της κλήσης στο EHR.",
+        "effects_on_pass": {
+          "state_update": { "flags_documentation_2_complete": true },
+          "score_delta": 15
+        },
+        "next_node_id": "n8_end_scenario"
+      },
+      {
+        "id": "n8_end_scenario",
+        "type": "end",
+        "text": "Το σενάριο ολοκληρώθηκε.",
+        "debrief_config": {
+          "show_score": true,
+          "show_decision_path": true,
+          "highlight_missed_docs": true,
+          "export_log": true
+        }
+      }
+    ]
+  },
+  "logging": {
+    "enabled": true,
+    "log_events": ["NODE_ENTER", "HOTSPOT_INTERACTION", "OPTION_SELECTED", "EHR_SUBMIT", "VITALS_CHANGE"],
+    "export_format": "JSON"
+  }
+}

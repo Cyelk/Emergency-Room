@@ -39,13 +39,25 @@ public class ScenarioEngine : MonoBehaviour
     
     IEnumerator StartScenario()
     {
+        Debug.Log("🔥 StartScenario ξεκίνησε!");
+        
         while (ScenarioLoader.Instance == null || ScenarioLoader.Instance.CurrentScenario == null)
         {
             yield return null;
         }
         
-        Debug.Log("🚀 ScenarioEngine ξεκίνησε!");
+        Debug.Log("🚀 ScenarioEngine ξεκίνησε! currentNodeId: " + currentNodeId);
         GoToNode(currentNodeId);
+    }
+    
+    public void RestartScenario()
+    {
+        Debug.Log("🔥 RestartScenario καλέστηκε!");
+        StopAllCoroutines();
+        currentScore = 0;
+        flags.Clear();
+        currentNodeId = "n1_start";
+        StartCoroutine(StartScenario());
     }
     
     public void GoToNode(string nodeId)
@@ -71,24 +83,16 @@ public class ScenarioEngine : MonoBehaviour
             GameLogger.Instance.LogEvent("NODE_ENTER", "Node: " + node.id + " (" + node.type + ")");
         
         if (nodeText != null)
-        {
             nodeText.text = node.text;
-        }
         
         EHRManager ehr = FindObjectOfType<EHRManager>();
         if (ehr != null)
         {
             if (node.id == "n7_gate_documentation_2")
-            {
                 ehr.ShowCommunicationFields();
-                Debug.Log("📋 Εμφάνιση Communication Fields");
-            }
             else if (node.id == "n1_start" || node.id == "n2_initial_decision" || 
                      node.id == "n3_intervention" || node.id == "n4_gate_documentation_1")
-            {
                 ehr.ShowAssessmentFields();
-                Debug.Log("📋 Εμφάνιση Assessment Fields");
-            }
         }
         
         ClearOptions();
@@ -101,9 +105,7 @@ public class ScenarioEngine : MonoBehaviour
             case "decision":
                 ShowOptions(node.options);
                 if (node.timeout != null && node.timeout.seconds > 0)
-                {
                     StartTimer(node);
-                }
                 break;
             case "gate":
                 ShowGate(node);
@@ -136,11 +138,7 @@ public class ScenarioEngine : MonoBehaviour
         {
             Button btn = CreateOptionButton(option.label);
             if (btn != null)
-            {
-                btn.onClick.AddListener(() => {
-                    SelectOption(option);
-                });
-            }
+                btn.onClick.AddListener(() => { SelectOption(option); });
         }
     }
     
@@ -150,23 +148,15 @@ public class ScenarioEngine : MonoBehaviour
         {
             continueButton.gameObject.SetActive(true);
             continueButton.onClick.RemoveAllListeners();
-            continueButton.onClick.AddListener(() => {
-                CheckGate(node);
-            });
+            continueButton.onClick.AddListener(() => { CheckGate(node); });
         }
         if (optionsContainer != null) optionsContainer.SetActive(false);
     }
     
     void CheckGate(NodeData node)
     {
-        Debug.Log("🚧 Έλεγχος gate: " + node.id);
-        
         EHRManager ehr = FindObjectOfType<EHRManager>();
-        if (ehr == null)
-        {
-            Debug.LogError("❌ EHRManager δεν βρέθηκε!");
-            return;
-        }
+        if (ehr == null) return;
         
         bool allFieldsOk = true;
         string missingFields = "";
@@ -184,35 +174,25 @@ public class ScenarioEngine : MonoBehaviour
                     {
                         case "observation": friendlyName = "Παρατήρηση"; break;
                         case "fiO2_setting": friendlyName = "FiO2"; break;
-                        case "device": friendlyName = "Συσκευή"; break;
-                        case "flow_rate": friendlyName = "Ροή"; break;
-                        case "skin_color": friendlyName = "Χρώμα δέρματος"; break;
-                        case "consciousness": friendlyName = "Επίπεδο συνείδησης"; break;
                         case "recipient": friendlyName = "Παραλήπτης"; break;
-                        case "reason": friendlyName = "Αιτία"; break;
                         case "outcome": friendlyName = "Αποτέλεσμα"; break;
+                        case "reason": friendlyName = "Αιτία"; break;
                     }
                     
                     missingFields += "• " + friendlyName + "\n";
-                    Debug.Log("❌ Λείπει: " + field);
                 }
             }
         }
         
         if (!allFieldsOk)
         {
-            Debug.LogWarning("⚠️ Ελλιπής τεκμηρίωση: " + missingFields);
-            
             if (GameLogger.Instance != null)
-                GameLogger.Instance.LogEvent("GATE_BLOCKED", "Αποτυχία gate: " + node.id + " - Λείπουν: " + missingFields);
+                GameLogger.Instance.LogEvent("GATE_BLOCKED", "Αποτυχία gate: " + node.id);
             
             if (nodeText != null)
-            {
                 nodeText.text = "⚠️ Ελλιπής τεκμηρίωση!\n\n" +
                                "Πρέπει να συμπληρώσετε τα εξής πεδία:\n" +
-                               missingFields + "\n" +
-                               node.feedback_blocked;
-            }
+                               missingFields + "\n" + node.feedback_blocked;
             
             if (ToastManager.Instance != null)
                 ToastManager.Instance.ShowToastStyled("⚠️ Ελλιπής τεκμηρίωση!", "warning");
@@ -220,15 +200,11 @@ public class ScenarioEngine : MonoBehaviour
             return;
         }
         
-        Debug.Log("✅ Gate πέρασε!");
-        
         if (GameLogger.Instance != null)
             GameLogger.Instance.LogEvent("GATE_PASSED", "Επιτυχία gate: " + node.id);
         
         if (nodeText != null)
-        {
             nodeText.text = node.feedback_success;
-        }
         
         if (ToastManager.Instance != null)
             ToastManager.Instance.ShowToastStyled("✅ " + node.feedback_success, "success");
@@ -236,10 +212,7 @@ public class ScenarioEngine : MonoBehaviour
         if (node.effects_on_pass != null)
         {
             if (node.effects_on_pass.score_delta != 0)
-            {
                 currentScore += node.effects_on_pass.score_delta;
-                Debug.Log("📊 Score: " + currentScore);
-            }
         }
         
         StartCoroutine(GoToNextAfterDelay(node.next_node_id, 1.5f));
@@ -253,6 +226,8 @@ public class ScenarioEngine : MonoBehaviour
     
     void ShowEnd(NodeData node)
     {
+        Debug.Log("🔥🔥🔥 ShowEnd ΚΛΗΘΗΚΕ! Node: " + node.id);
+        
         if (continueButton != null) continueButton.gameObject.SetActive(false);
         if (optionsContainer != null) optionsContainer.SetActive(false);
         
@@ -264,31 +239,28 @@ public class ScenarioEngine : MonoBehaviour
             GameLogger.Instance.ExportToJSON();
         }
         
-        // Άνοιξε το Debrief
-        if (DebriefManager.Instance != null)
+        Debug.Log("🔥 Ψάχνω DebriefManager...");
+        DebriefManager debrief = FindObjectOfType<DebriefManager>(true);
+        
+        if (debrief != null)
         {
-            DebriefManager.Instance.ShowDebrief();
+            Debug.Log("🔥 DebriefManager βρέθηκε, καλώ ShowDebrief()");
+            debrief.ShowDebrief();
         }
         else
         {
-            if (ToastManager.Instance != null)
-                ToastManager.Instance.ShowToastStyled("🏁 Τέλος σεναρίου! Σκορ: " + currentScore, "info");
+            Debug.LogError("❌ DebriefManager δεν βρέθηκε!");
         }
     }
     
     void SelectOption(OptionData option)
     {
-        Debug.Log("✅ Επιλογή: " + option.label);
-        
         StopTimer();
         
         if (option.effects != null)
         {
             if (option.effects.score_delta != 0)
-            {
                 currentScore += option.effects.score_delta;
-                Debug.Log("📊 Score: " + currentScore);
-            }
             
             if (!string.IsNullOrEmpty(option.effects.toast))
             {
@@ -296,7 +268,6 @@ public class ScenarioEngine : MonoBehaviour
                     ToastManager.Instance.ShowToast(option.effects.toast);
             }
             
-            // Εφάρμοσε vitals ΜΟΝΟ αν υπάρχει vitals_update
             if (option.effects.vitals_update != null && VitalsData.Instance != null)
             {
                 VitalsData.Instance.ApplyVitalsUpdate(
@@ -314,8 +285,6 @@ public class ScenarioEngine : MonoBehaviour
         
         GoToNode(option.next_node_id);
     }
-    
-    // ==================== TIMER ====================
     
     void StartTimer(NodeData node)
     {
@@ -344,30 +313,19 @@ public class ScenarioEngine : MonoBehaviour
         }
         
         if (timerText != null)
-        {
             timerText.gameObject.SetActive(false);
-        }
     }
     
     IEnumerator TimerRoutine(NodeData node)
     {
-        int totalSeconds = node.timeout.seconds;
-        int remaining = totalSeconds;
+        int remaining = node.timeout.seconds;
         
         while (remaining > 0 && timeoutActive)
         {
             if (timerText != null)
             {
                 timerText.text = "⏱️ " + remaining + "s";
-                
-                if (remaining <= 10)
-                {
-                    timerText.color = Color.red;
-                }
-                else
-                {
-                    timerText.color = Color.white;
-                }
+                timerText.color = remaining <= 10 ? Color.red : Color.white;
             }
             
             yield return new WaitForSeconds(1f);
@@ -375,15 +333,11 @@ public class ScenarioEngine : MonoBehaviour
         }
         
         if (timeoutActive)
-        {
             OnTimeout(node);
-        }
     }
     
     void OnTimeout(NodeData node)
     {
-        Debug.Log("⏰ TIMEOUT! Εφαρμογή effects...");
-        
         timeoutActive = false;
         
         if (timerText != null)
@@ -401,15 +355,14 @@ public class ScenarioEngine : MonoBehaviour
                 VitalsData.Instance.ApplyVitalsUpdate(
                     effects.vitals_update.spo2,
                     effects.vitals_update.hr,
-                    135, 85, 22
+                    VitalsData.Instance.bpSystolic,
+                    VitalsData.Instance.bpDiastolic,
+                    VitalsData.Instance.rr
                 );
             }
             
             if (effects.score_delta != 0)
-            {
                 currentScore += effects.score_delta;
-                Debug.Log("📊 Score: " + currentScore);
-            }
             
             if (!string.IsNullOrEmpty(effects.toast))
             {
@@ -421,15 +374,9 @@ public class ScenarioEngine : MonoBehaviour
         GoToNode(node.timeout.next_node_id);
     }
     
-    // ==================== OPTION BUTTONS ====================
-    
     Button CreateOptionButton(string label)
     {
-        if (optionButtonPrefab == null)
-        {
-            Debug.LogError("❌ Το optionButtonPrefab δεν είναι συνδεδεμένο!");
-            return null;
-        }
+        if (optionButtonPrefab == null) return null;
         
         GameObject btnObj = Instantiate(optionButtonPrefab, optionsContainer.transform);
         Button btn = btnObj.GetComponent<Button>();
@@ -445,8 +392,6 @@ public class ScenarioEngine : MonoBehaviour
         if (optionsContainer == null) return;
         
         foreach (Transform child in optionsContainer.transform)
-        {
             Destroy(child.gameObject);
-        }
     }
 }

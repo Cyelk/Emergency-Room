@@ -12,11 +12,8 @@ public class EHRPanelController : MonoBehaviour, IPointerEnterHandler, IPointerE
         ehrManager = FindObjectOfType<EHRManager>();
     }
     
-    // Όταν ο κέρσορας μπαίνει μέσα στο EHR Panel
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("🖱️ Κέρσορας μέσα στο EHR - Σταματάει η κάμερα");
-        
         if (playerController != null)
         {
             playerController.canLook = false;
@@ -27,21 +24,29 @@ public class EHRPanelController : MonoBehaviour, IPointerEnterHandler, IPointerE
         Cursor.visible = true;
     }
     
-    // Όταν ο κέρσορας βγαίνει από το EHR Panel
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("🖱️ Κέρσορας έξω από το EHR");
+        Debug.Log("👁️ OnPointerExit - Selection: " + (ScenarioSelectionManager.Instance != null) + " | isPanelOpen: " + (ScenarioSelectionManager.Instance != null ? ScenarioSelectionManager.Instance.IsPanelOpen().ToString() : "N/A"));
         
-        // Αν το EHR είναι ακόμα ανοιχτό, μην επαναφέρεις την κίνηση
+        if (ScenarioSelectionManager.Instance != null && ScenarioSelectionManager.Instance.IsPanelOpen())
+        {
+            Debug.Log("👁️ Selection ανοιχτό - Αγνοώ");
+            return;
+        }
+        
+        if (HelpManager.Instance != null && HelpManager.Instance.IsHelpOpen())
+        {
+            Debug.Log("👁️ Help ανοιχτό - Αγνοώ");
+            return;
+        }
+        
         if (ehrManager != null && ehrManager.IsEHRPanelOpen())
         {
-            // Το EHR είναι ανοιχτό - ο κέρσορας πρέπει να είναι ελεύθερος
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
             return;
         }
         
-        // Το EHR είναι κλειστό - κλείδωσε τον κέρσορα
         if (playerController != null)
         {
             playerController.canLook = true;

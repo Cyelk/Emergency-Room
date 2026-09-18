@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class PlayerInteraction : MonoBehaviour
 {
@@ -12,41 +13,37 @@ public class PlayerInteraction : MonoBehaviour
     {
         playerCamera = GetComponentInChildren<Camera>();
         ehrManager = FindObjectOfType<EHRManager>();
-        
-        Debug.Log("🎥 PlayerInteraction ξεκίνησε. Κάμερα: " + (playerCamera != null));
-        Debug.Log("🔍 EHRManager: " + (ehrManager != null ? "Βρέθηκε" : "ΔΕΝ βρέθηκε"));
     }
     
     void Update()
     {
-        // Αν το EHR είναι ανοιχτό, μην κάνεις interact
         if (ehrManager != null && ehrManager.IsEHRPanelOpen())
-        {
             return;
-        }
         
-        // Κάνε raycast από το κέντρο της οθόνης
+        if (HelpManager.Instance != null && HelpManager.Instance.IsHelpOpen())
+            return;
+        
+        if (ScenarioSelectionManager.Instance != null && ScenarioSelectionManager.Instance.IsPanelOpen())
+            return;
+        
+        if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
+            return;
+        
         Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         RaycastHit hit;
-        
-        Debug.DrawRay(ray.origin, ray.direction * interactionRange, Color.red);
         
         if (Physics.Raycast(ray, out hit, interactionRange))
         {
             GameObject hitObject = hit.collider.gameObject;
             
-            // Ψάξε για HotspotHandler
             HotspotHandler handler = hitObject.GetComponent<HotspotHandler>();
             if (handler == null) handler = hitObject.GetComponentInParent<HotspotHandler>();
             if (handler == null) handler = hitObject.GetComponentInChildren<HotspotHandler>();
             
             if (handler != null)
             {
-                Debug.Log("✅ Κοιτάς: " + handler.hotspotName);
-                
                 if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
                 {
-                    Debug.Log("🖱️ ΚΛΙΚ! Ενεργοποίηση: " + handler.hotspotName);
                     handler.HandleClick();
                 }
             }

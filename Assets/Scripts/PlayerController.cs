@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour
     
     void Update()
     {
-        // Έλεγξε αν το EHR ή το Help είναι ανοιχτό
         EHRManager ehr = FindObjectOfType<EHRManager>();
         bool ehrOpen = ehr != null && ehr.IsEHRPanelOpen();
         
@@ -34,19 +33,19 @@ public class PlayerController : MonoBehaviour
         if (HelpManager.Instance != null)
             helpOpen = HelpManager.Instance.IsHelpOpen();
         
-        // Αν το EHR ή το Help είναι ανοιχτό, ΜΗΝ διαβάζεις input
-        if (ehrOpen || helpOpen)
+        bool selectionOpen = false;
+        if (ScenarioSelectionManager.Instance != null)
+            selectionOpen = ScenarioSelectionManager.Instance.IsPanelOpen();
+        
+        if (ehrOpen || helpOpen || selectionOpen)
         {
             if (controller.isGrounded && velocity.y < 0)
-            {
                 velocity.y = -2f;
-            }
             velocity.y += gravity * Time.deltaTime;
             controller.Move(velocity * Time.deltaTime);
             return;
         }
         
-        // === ΠΕΡΙΣΤΡΟΦΗ ΜΕ ΠΟΝΤΙΚΙ ===
         if (canLook)
         {
             float mouseX = Mouse.current.delta.x.ReadValue() * mouseSensitivity * 0.1f;
@@ -59,7 +58,6 @@ public class PlayerController : MonoBehaviour
             cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         }
         
-        // === ΚΙΝΗΣΗ ΜΕ WASD ===
         if (canMove)
         {
             float x = 0f;
@@ -78,15 +76,11 @@ public class PlayerController : MonoBehaviour
             controller.Move(move * moveSpeed * Time.deltaTime);
         }
         
-        // === ΒΑΡΥΤΗΤΑ ===
         if (controller.isGrounded && velocity.y < 0)
-        {
             velocity.y = -2f;
-        }
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
         
-        // === ESC / ΚΛΙΚ ===
         var kb = Keyboard.current;
         if (kb != null && kb.escapeKey.wasPressedThisFrame)
         {
@@ -94,7 +88,7 @@ public class PlayerController : MonoBehaviour
             Cursor.visible = true;
         }
         
-        if (!ehrOpen && !helpOpen && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame 
+        if (!ehrOpen && !helpOpen && !selectionOpen && Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame 
             && Cursor.lockState == CursorLockMode.None)
         {
             Cursor.lockState = CursorLockMode.Locked;

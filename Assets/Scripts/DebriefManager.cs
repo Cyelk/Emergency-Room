@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using System.Collections.Generic;
 using System.Linq;
 
 public class DebriefManager : MonoBehaviour
@@ -16,7 +15,6 @@ public class DebriefManager : MonoBehaviour
     
     [Header("Buttons")]
     public Button exportButton;
-    public Button restartButton;
     public Button closeButton;
     
     [Header("EHR Panels to Hide")]
@@ -30,14 +28,13 @@ public class DebriefManager : MonoBehaviour
     
     void Start()
     {
+        Debug.Log("🔥 DebriefManager.Start() - debriefPanel: " + (debriefPanel != null ? "OK" : "NULL"));
+        
         if (debriefPanel != null)
             debriefPanel.SetActive(false);
         
         if (exportButton != null)
             exportButton.onClick.AddListener(OnExport);
-        
-        if (restartButton != null)
-            restartButton.onClick.AddListener(OnRestart);
         
         if (closeButton != null)
             closeButton.onClick.AddListener(OnClose);
@@ -45,12 +42,33 @@ public class DebriefManager : MonoBehaviour
     
     public void ShowDebrief()
     {
-        if (debriefPanel == null) return;
+        Debug.Log("📋 ShowDebrief καλέστηκε!");
+        
+        if (debriefPanel == null)
+        {
+            Debug.LogError("❌ debriefPanel είναι NULL!");
+            return;
+        }
+        
+        Debug.Log("📋 debriefPanel name: " + debriefPanel.name);
+        Debug.Log("📋 debriefPanel position: " + debriefPanel.GetComponent<RectTransform>().position);
+        Debug.Log("📋 debriefPanel sizeDelta: " + debriefPanel.GetComponent<RectTransform>().sizeDelta);
+        Debug.Log("📋 debriefPanel active πριν: " + debriefPanel.activeSelf);
+        Debug.Log("📋 debriefPanel parent: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.name : "NULL"));
+        Debug.Log("📋 debriefPanel parent active: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.gameObject.activeSelf.ToString() : "N/A"));
         
         if (ehrPanel != null)
+        {
             ehrPanel.SetActive(false);
+            Debug.Log("📋 EHR Panel έκλεισε");
+        }
         
         debriefPanel.SetActive(true);
+        debriefPanel.transform.SetAsLastSibling();
+        
+        Debug.Log("📋 debriefPanel active μετά: " + debriefPanel.activeSelf);
+        Debug.Log("📋 debriefPanel in hierarchy: " + debriefPanel.activeInHierarchy);
+        Debug.Log("📋 debriefPanel parent active μετά: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.gameObject.activeSelf.ToString() : "N/A"));
         
         UpdateScore();
         UpdateDecisionPath();
@@ -89,9 +107,7 @@ public class DebriefManager : MonoBehaviour
         
         string path = "📖 Διαδρομή Αποφάσεων:\n";
         foreach (var entry in nodeEntries)
-        {
             path += "  → " + entry.details.Replace("Node: ", "") + "\n";
-        }
         
         decisionPathText.text = path;
     }
@@ -121,9 +137,7 @@ public class DebriefManager : MonoBehaviour
         {
             doc += "\n📊 Έλεγχος Τεκμηρίωσης:\n";
             foreach (var log in ValidationManager.Instance.validationLog)
-            {
                 doc += "  " + log + "\n";
-            }
             doc += "\n  Σύνολο: " + ValidationManager.Instance.validationScore + " πόντοι\n";
         }
         
@@ -133,48 +147,23 @@ public class DebriefManager : MonoBehaviour
     void OnExport()
     {
         if (GameLogger.Instance != null)
-        {
             GameLogger.Instance.ExportToJSON();
-            
-            if (ToastManager.Instance != null)
-                ToastManager.Instance.ShowToastStyled("📥 Το log εξήχθη!", "success");
-        }
+        
+        if (ToastManager.Instance != null)
+            ToastManager.Instance.ShowToastStyled("📥 Το log εξήχθη!", "success");
     }
     
-    void OnRestart()
+    public void CloseDebrief()
     {
-        Debug.Log("🔄 Επανεκκίνηση...");
-        
-        if (ScenarioEngine.Instance != null)
-            ScenarioEngine.Instance.currentScore = 0;
-        
-        if (GameLogger.Instance != null)
-            GameLogger.Instance.ClearLog();
-        
-        if (VitalsData.Instance != null)
-            VitalsData.Instance.ApplyVitalsUpdate(88, 110, 135, 85, 22);
-        
-        if (EHRManager.Instance != null)
-            EHRManager.Instance.ResetFields();
-        
-        if (ValidationManager.Instance != null)
-            ValidationManager.Instance.ResetValidation();
-        
         if (debriefPanel != null)
             debriefPanel.SetActive(false);
-        
-        if (ehrPanel != null)
-            ehrPanel.SetActive(true);
-        
-        if (ScenarioEngine.Instance != null)
-            ScenarioEngine.Instance.GoToNode("n1_start");
+        Debug.Log("📋 Debrief έκλεισε");
     }
     
     void OnClose()
     {
         if (debriefPanel != null)
             debriefPanel.SetActive(false);
-        
         if (ehrPanel != null)
             ehrPanel.SetActive(true);
     }
