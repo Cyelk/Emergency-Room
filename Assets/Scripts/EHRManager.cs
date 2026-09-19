@@ -103,7 +103,7 @@ public class EHRManager : MonoBehaviour
                 player.enabled = false;
             }
             
-            Debug.Log("📂 EHR άνοιξε από: " + hotspotName);
+            Debug.Log("EHR άνοιξε από: " + hotspotName);
         }
     }
     
@@ -135,7 +135,7 @@ public class EHRManager : MonoBehaviour
                 player.enabled = true;
             }
             
-            Debug.Log("📂 EHR έκλεισε");
+            Debug.Log("EHR έκλεισε");
         }
     }
     
@@ -243,24 +243,24 @@ public class EHRManager : MonoBehaviour
         
         if (hasError)
         {
-            Debug.LogWarning("⚠️ Λείπουν πεδία: " + missingFields);
+            Debug.LogWarning("Λείπουν πεδία: " + missingFields);
             
             if (GameLogger.Instance != null)
                 GameLogger.Instance.LogEvent("EHR_SUBMIT_FAILED", "Λείπουν: " + missingFields);
             
             if (ToastManager.Instance != null)
-                ToastManager.Instance.ShowToastStyled("⚠️ Λείπουν πεδία!", "warning");
+                ToastManager.Instance.ShowToastStyled("Λείπουν πεδία!", "warning");
             
             return;
         }
         
-        Debug.Log("✅ EHR Υποβολή");
+        Debug.Log("EHR Υποβολή");
         
         if (GameLogger.Instance != null)
             GameLogger.Instance.LogEvent("EHR_SUBMIT", "Επιτυχής υποβολή");
         
         if (ToastManager.Instance != null)
-            ToastManager.Instance.ShowToastStyled("✅ Η τεκμηρίωση καταχωρήθηκε!", "success");
+            ToastManager.Instance.ShowToastStyled("Η τεκμηρίωση καταχωρήθηκε!", "success");
     }
     
     public bool IsFieldSubmitted(string fieldName)

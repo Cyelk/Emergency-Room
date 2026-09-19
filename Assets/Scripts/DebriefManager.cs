@@ -28,7 +28,7 @@ public class DebriefManager : MonoBehaviour
     
     void Start()
     {
-        Debug.Log("🔥 DebriefManager.Start() - debriefPanel: " + (debriefPanel != null ? "OK" : "NULL"));
+        Debug.Log("DebriefManager.Start() - debriefPanel: " + (debriefPanel != null ? "OK" : "NULL"));
         
         if (debriefPanel != null)
             debriefPanel.SetActive(false);
@@ -42,39 +42,25 @@ public class DebriefManager : MonoBehaviour
     
     public void ShowDebrief()
     {
-        Debug.Log("📋 ShowDebrief καλέστηκε!");
+        if (debriefPanel == null) return;
         
-        if (debriefPanel == null)
-        {
-            Debug.LogError("❌ debriefPanel είναι NULL!");
-            return;
-        }
-        
-        Debug.Log("📋 debriefPanel name: " + debriefPanel.name);
-        Debug.Log("📋 debriefPanel position: " + debriefPanel.GetComponent<RectTransform>().position);
-        Debug.Log("📋 debriefPanel sizeDelta: " + debriefPanel.GetComponent<RectTransform>().sizeDelta);
-        Debug.Log("📋 debriefPanel active πριν: " + debriefPanel.activeSelf);
-        Debug.Log("📋 debriefPanel parent: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.name : "NULL"));
-        Debug.Log("📋 debriefPanel parent active: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.gameObject.activeSelf.ToString() : "N/A"));
+        Debug.Log("debriefPanel parent: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.name : "NULL (αποκολλημένο!)"));
+        Debug.Log("debriefPanel root: " + debriefPanel.transform.root.name);
+        Debug.Log("debriefPanel sibling index: " + debriefPanel.transform.GetSiblingIndex());
+        Debug.Log("debriefPanel scene: " + debriefPanel.scene.name);
         
         if (ehrPanel != null)
-        {
             ehrPanel.SetActive(false);
-            Debug.Log("📋 EHR Panel έκλεισε");
-        }
         
         debriefPanel.SetActive(true);
         debriefPanel.transform.SetAsLastSibling();
         
-        Debug.Log("📋 debriefPanel active μετά: " + debriefPanel.activeSelf);
-        Debug.Log("📋 debriefPanel in hierarchy: " + debriefPanel.activeInHierarchy);
-        Debug.Log("📋 debriefPanel parent active μετά: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.gameObject.activeSelf.ToString() : "N/A"));
+        Debug.Log("debriefPanel parent ΜΕΤΑ: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.name : "NULL"));
+        Debug.Log("debriefPanel root ΜΕΤΑ: " + debriefPanel.transform.root.name);
         
         UpdateScore();
         UpdateDecisionPath();
         UpdateDocumentation();
-        
-        Debug.Log("📋 Debrief άνοιξε");
     }
     
     void UpdateScore()
@@ -105,7 +91,7 @@ public class DebriefManager : MonoBehaviour
         var entries = GameLogger.Instance.GetLogEntries();
         var nodeEntries = entries.Where(e => e.eventType == "NODE_ENTER").ToList();
         
-        string path = "📖 Διαδρομή Αποφάσεων:\n";
+        string path = "Διαδρομή Αποφάσεων:\n";
         foreach (var entry in nodeEntries)
             path += "  → " + entry.details.Replace("Node: ", "") + "\n";
         
@@ -116,7 +102,7 @@ public class DebriefManager : MonoBehaviour
     {
         if (documentationText == null) return;
         
-        string doc = "📝 Τεκμηρίωση:\n";
+        string doc = "Τεκμηρίωση:\n";
         
         EHRManager ehr = EHRManager.Instance;
         if (ehr != null)
@@ -135,7 +121,7 @@ public class DebriefManager : MonoBehaviour
         
         if (ValidationManager.Instance != null)
         {
-            doc += "\n📊 Έλεγχος Τεκμηρίωσης:\n";
+            doc += "\nΈλεγχος Τεκμηρίωσης:\n";
             foreach (var log in ValidationManager.Instance.validationLog)
                 doc += "  " + log + "\n";
             doc += "\n  Σύνολο: " + ValidationManager.Instance.validationScore + " πόντοι\n";
@@ -150,14 +136,14 @@ public class DebriefManager : MonoBehaviour
             GameLogger.Instance.ExportToJSON();
         
         if (ToastManager.Instance != null)
-            ToastManager.Instance.ShowToastStyled("📥 Το log εξήχθη!", "success");
+            ToastManager.Instance.ShowToastStyled("Το log εξήχθη!", "success");
     }
     
     public void CloseDebrief()
     {
         if (debriefPanel != null)
             debriefPanel.SetActive(false);
-        Debug.Log("📋 Debrief έκλεισε");
+        Debug.Log("Debrief έκλεισε");
     }
     
     void OnClose()

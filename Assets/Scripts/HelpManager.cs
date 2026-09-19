@@ -58,7 +58,7 @@ public class HelpManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         
-        Debug.Log("❓ Help άνοιξε");
+        Debug.Log("Help άνοιξε");
     }
     
     public void CloseHelp()
@@ -80,7 +80,7 @@ public class HelpManager : MonoBehaviour
             Cursor.visible = false;
         }
         
-        Debug.Log("❓ Help έκλεισε");
+        Debug.Log("Help έκλεισε");
     }
     
     public bool IsHelpOpen()

@@ -26,17 +26,17 @@ public class EHRPanelController : MonoBehaviour, IPointerEnterHandler, IPointerE
     
     public void OnPointerExit(PointerEventData eventData)
     {
-        Debug.Log("👁️ OnPointerExit - Selection: " + (ScenarioSelectionManager.Instance != null) + " | isPanelOpen: " + (ScenarioSelectionManager.Instance != null ? ScenarioSelectionManager.Instance.IsPanelOpen().ToString() : "N/A"));
+        Debug.Log("OnPointerExit - Selection: " + (ScenarioSelectionManager.Instance != null) + " | isPanelOpen: " + (ScenarioSelectionManager.Instance != null ? ScenarioSelectionManager.Instance.IsPanelOpen().ToString() : "N/A"));
         
         if (ScenarioSelectionManager.Instance != null && ScenarioSelectionManager.Instance.IsPanelOpen())
         {
-            Debug.Log("👁️ Selection ανοιχτό - Αγνοώ");
+            Debug.Log("Selection ανοιχτό - Αγνοώ");
             return;
         }
         
         if (HelpManager.Instance != null && HelpManager.Instance.IsHelpOpen())
         {
-            Debug.Log("👁️ Help ανοιχτό - Αγνοώ");
+            Debug.Log("Help ανοιχτό - Αγνοώ");
             return;
         }
         

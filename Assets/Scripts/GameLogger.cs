@@ -28,7 +28,7 @@ public class GameLogger : MonoBehaviour
         LogEntry entry = new LogEntry(eventType, details, currentScore);
         logEntries.Add(entry);
         
-        Debug.Log("📝 [" + eventType + "] " + details);
+        Debug.Log("[" + eventType + "] " + details);
     }
     
     public void ExportToJSON()
@@ -55,7 +55,7 @@ public class GameLogger : MonoBehaviour
         string json = JsonUtility.ToJson(wrapper, true);
         File.WriteAllText(path, json);
         
-        Debug.Log("💾 Log αποθηκεύτηκε: " + path);
+        Debug.Log("Log αποθηκεύτηκε: " + path);
     }
     
     public List<LogEntry> GetLogEntries()
@@ -66,7 +66,7 @@ public class GameLogger : MonoBehaviour
     public void ClearLog()
     {
         logEntries.Clear();
-        Debug.Log("🗑️ Log καθαρίστηκε");
+        Debug.Log("Log καθαρίστηκε");
     }
     
     [System.Serializable]

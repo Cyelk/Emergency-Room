@@ -69,7 +69,7 @@ public class GlobalRules : MonoBehaviour
         if (ToastManager.Instance != null)
         {
             ToastManager.Instance.ShowPersistentToast(
-                "🚨 ΣΥΝΑΓΕΡΜΟΣ: SpO2 < 90% (Υποξαιμία)!",
+                "ΣΥΝΑΓΕΡΜΟΣ: SpO2 < 90% (Υποξαιμία)!",
                 "danger"
             );
         }
@@ -78,7 +78,7 @@ public class GlobalRules : MonoBehaviour
     void StopAlarm()
     {
         isAlarmActive = false;
-        Debug.Log("✅ Ο συναγερμός έληξε");
+        Debug.Log("Ο συναγερμός έληξε");
         
         if (blinkCoroutine != null)
         {

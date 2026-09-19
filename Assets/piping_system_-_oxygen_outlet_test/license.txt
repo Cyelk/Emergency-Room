@@ -1,0 +1,11 @@
+Model Information:
+* title:	Piping system - OXYGEN OUTLET TEST
+* source:	https://sketchfab.com/3d-models/piping-system-oxygen-outlet-test-b03e63618e17491b995c65b1e5d5dbec
+* author:	星医療酸器 (https://sketchfab.com/7634hosi)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Piping system - OXYGEN OUTLET TEST" (https://sketchfab.com/3d-models/piping-system-oxygen-outlet-test-b03e63618e17491b995c65b1e5d5dbec) by 星医療酸器 (https://sketchfab.com/7634hosi) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

@@ -44,7 +44,7 @@ public class ToastManager : MonoBehaviour
         toastText.text = message;
         toastPanel.SetActive(true);
         
-        Debug.Log("💬 Toast: " + message);
+        Debug.Log("Toast: " + message);
         
         yield return new WaitForSeconds(duration);
         
@@ -98,7 +98,7 @@ public class ToastManager : MonoBehaviour
             toastPanel.SetActive(true);
         }
         
-        Debug.Log("🚨 Persistent Toast: " + message);
+        Debug.Log("Persistent Toast: " + message);
     }
     
     public void HidePersistentToast()

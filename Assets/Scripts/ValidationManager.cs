@@ -29,7 +29,7 @@ public class ValidationManager : MonoBehaviour
         
         if (rule == null)
         {
-            Debug.Log("ℹ️ Δεν βρέθηκε κανόνας για: " + fieldName);
+            Debug.Log("Δεν βρέθηκε κανόνας για: " + fieldName);
             return 0;
         }
         
@@ -50,11 +50,11 @@ public class ValidationManager : MonoBehaviour
         
         int score = isValid ? rule.score_if_valid : rule.score_if_invalid;
         
-        string result = isValid ? "✅" : "❌";
+        string result = isValid ? "ΝΑΙ" : "ΟΧΙ";
         string logEntry = result + " " + fieldName + ": '" + userInput + "' (" + (score >= 0 ? "+" : "") + score + ")";
         validationLog.Add(logEntry);
         
-        Debug.Log("📋 Validation: " + logEntry);
+        Debug.Log("Validation: " + logEntry);
         
         validationScore += score;
         
@@ -124,6 +124,6 @@ public class ValidationManager : MonoBehaviour
     {
         validationScore = 0;
         validationLog.Clear();
-        Debug.Log("🗑️ Validation reset");
+        Debug.Log("Validation reset");
     }
 }

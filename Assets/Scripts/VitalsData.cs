@@ -30,14 +30,14 @@ public class VitalsData : MonoBehaviour
     {
         spo2 = Mathf.Clamp(value, 0, 100);
         OnVitalsChanged?.Invoke();
-        Debug.Log("📊 SpO2: " + spo2);
+        Debug.Log("SpO2: " + spo2);
     }
     
     public void SetHR(int value)
     {
         hr = Mathf.Clamp(value, 0, 250);
         OnVitalsChanged?.Invoke();
-        Debug.Log("📊 HR: " + hr);
+        Debug.Log("HR: " + hr);
     }
     
     public void SetBP(int systolic, int diastolic)
@@ -45,14 +45,14 @@ public class VitalsData : MonoBehaviour
         bpSystolic = systolic;
         bpDiastolic = diastolic;
         OnVitalsChanged?.Invoke();
-        Debug.Log("📊 BP: " + bpSystolic + "/" + bpDiastolic);
+        Debug.Log("BP: " + bpSystolic + "/" + bpDiastolic);
     }
     
     public void SetRR(int value)
     {
         rr = Mathf.Clamp(value, 0, 60);
         OnVitalsChanged?.Invoke();
-        Debug.Log("📊 RR: " + rr);
+        Debug.Log("RR: " + rr);
     }
     
     public void ApplyVitalsUpdate(int newSpo2, int newHr, int newBpSys, int newBpDia, int newRr)
@@ -60,13 +60,13 @@ public class VitalsData : MonoBehaviour
         // Μην επιτρέπεις 0 αν η νέα τιμή είναι 0 και η παλιά δεν είναι
         if (newSpo2 == 0 && spo2 > 0)
         {
-            Debug.LogWarning("⚠️ Απόπειρα μηδενισμού SpO2 - Αγνοήθηκε");
+            Debug.LogWarning("Απόπειρα μηδενισμού SpO2 - Αγνοήθηκε");
             return;
         }
         
         if (newHr == 0 && hr > 0)
         {
-            Debug.LogWarning("⚠️ Απόπειρα μηδενισμού HR - Αγνοήθηκε");
+            Debug.LogWarning("Απόπειρα μηδενισμού HR - Αγνοήθηκε");
             return;
         }
         
@@ -76,7 +76,7 @@ public class VitalsData : MonoBehaviour
         bpDiastolic = newBpDia;
         rr = newRr;
         OnVitalsChanged?.Invoke();
-        Debug.Log("📊 Vitals Updated: SpO2=" + spo2 + " HR=" + hr + " BP=" + bpSystolic + "/" + bpDiastolic + " RR=" + rr);
+        Debug.Log("Vitals Updated: SpO2=" + spo2 + " HR=" + hr + " BP=" + bpSystolic + "/" + bpDiastolic + " RR=" + rr);
         
         if (GameLogger.Instance != null)
             GameLogger.Instance.LogEvent("VITALS_CHANGE", 

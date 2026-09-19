@@ -1,0 +1,11 @@
+Model Information:
+* title:	Medical Console Unit 　メディカルコンソール
+* source:	https://sketchfab.com/3d-models/medical-console-unit-6413b9a40bcf40d8982b6389a165f808
+* author:	星医療酸器 (https://sketchfab.com/7634hosi)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Medical Console Unit 　メディカルコンソール" (https://sketchfab.com/3d-models/medical-console-unit-6413b9a40bcf40d8982b6389a165f808) by 星医療酸器 (https://sketchfab.com/7634hosi) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

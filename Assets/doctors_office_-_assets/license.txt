@@ -1,0 +1,11 @@
+Model Information:
+* title:	Doctor's Office - Assets
+* source:	https://sketchfab.com/3d-models/doctors-office-assets-3facd48dff0945f7b96f95ad31c4beb5
+* author:	SeverDoes3D (https://sketchfab.com/SeverDoes3D)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Doctor's Office - Assets" (https://sketchfab.com/3d-models/doctors-office-assets-3facd48dff0945f7b96f95ad31c4beb5) by SeverDoes3D (https://sketchfab.com/SeverDoes3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

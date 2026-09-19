@@ -74,7 +74,7 @@ public class ScenarioSelectionManager : MonoBehaviour
             {
                 string fileName = Path.GetFileName(file);
                 scenarioFiles.Add(fileName);
-                Debug.Log("📄 Βρέθηκε σενάριο: " + fileName);
+                Debug.Log("Βρέθηκε σενάριο: " + fileName);
             }
         }
     }
@@ -118,11 +118,11 @@ public class ScenarioSelectionManager : MonoBehaviour
     
     public void OpenSelection()
     {
-        Debug.Log("🔥 OpenSelection ΚΛΗΘΗΚΕ!");
+        Debug.Log("OpenSelection ΚΛΗΘΗΚΕ!");
         
         if (selectionPanel == null)
         {
-            Debug.LogError("❌ selectionPanel είναι NULL!");
+            Debug.LogError("selectionPanel είναι NULL!");
             return;
         }
         
@@ -137,7 +137,7 @@ public class ScenarioSelectionManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         
-        Debug.Log("📋 Selection άνοιξε");
+        Debug.Log("Selection άνοιξε");
     }
     
     public void CloseSelection()
@@ -150,7 +150,7 @@ public class ScenarioSelectionManager : MonoBehaviour
         ShowPanel(ehrPanel);
         ShowPanel(debriefPanel);
         
-        Debug.Log("📋 Selection έκλεισε");
+        Debug.Log("Selection έκλεισε");
     }
     
     void HidePanel(GameObject panel)
@@ -190,7 +190,7 @@ public class ScenarioSelectionManager : MonoBehaviour
     
     public void LoadScenario(string fileName)
     {
-        Debug.Log("🔄 Φόρτωση σεναρίου: " + fileName);
+        Debug.Log("Φόρτωση σεναρίου: " + fileName);
         
         if (selectionPanel != null)
             selectionPanel.SetActive(false);
@@ -217,12 +217,12 @@ public class ScenarioSelectionManager : MonoBehaviour
         if (ehrPanel != null)
             ehrPanel.SetActive(true);
         
-        Debug.Log("✅ Σενάριο φορτώθηκε: " + fileName);
+        Debug.Log("Σενάριο φορτώθηκε: " + fileName);
     }
     
     void ResetGameState()
     {
-        Debug.Log("🔄 Reset κατάστασης...");
+        Debug.Log("Reset κατάστασης...");
         
         if (VitalsData.Instance != null)
             VitalsData.Instance.ApplyVitalsUpdate(88, 110, 135, 85, 22);
@@ -239,11 +239,15 @@ public class ScenarioSelectionManager : MonoBehaviour
         if (HelpManager.Instance != null && HelpManager.Instance.IsHelpOpen())
             HelpManager.Instance.CloseHelp();
         
-        GameObject debriefObj = GameObject.Find("DebriefPanel");
-        if (debriefObj != null)
+        // ΚΛΕΙΣΕ ΤΟ DEBRIEF ΜΕ ΤΟ SCRIPT
+        if (DebriefManager.Instance != null)
         {
-            debriefObj.SetActive(false);
-            Debug.Log("🔄 DebriefPanel έκλεισε");
+            DebriefManager.Instance.CloseDebrief();
+            Debug.Log("DebriefPanel έκλεισε μέσω DebriefManager");
+        }
+        else
+        {
+            Debug.LogError("DebriefManager.Instance είναι NULL!");
         }
         
         PlayerController player = FindObjectOfType<PlayerController>();
@@ -255,7 +259,7 @@ public class ScenarioSelectionManager : MonoBehaviour
             player.enabled = true;
         }
         
-        Debug.Log("✅ Reset ολοκληρώθηκε");
+        Debug.Log("Reset ολοκληρώθηκε");
     }
     
     public bool IsPanelOpen()

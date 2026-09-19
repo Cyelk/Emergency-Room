@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class ScenarioEngine : MonoBehaviour
 {
@@ -39,36 +40,44 @@ public class ScenarioEngine : MonoBehaviour
     
     IEnumerator StartScenario()
     {
-        Debug.Log("🔥 StartScenario ξεκίνησε!");
+        Debug.Log("StartScenario ξεκίνησε!");
         
         while (ScenarioLoader.Instance == null || ScenarioLoader.Instance.CurrentScenario == null)
         {
             yield return null;
         }
         
-        Debug.Log("🚀 ScenarioEngine ξεκίνησε! currentNodeId: " + currentNodeId);
+        Debug.Log("ScenarioEngine ξεκίνησε! currentNodeId: " + currentNodeId);
         GoToNode(currentNodeId);
     }
     
     public void RestartScenario()
     {
-        Debug.Log("🔥 RestartScenario καλέστηκε!");
+        Debug.Log("RestartScenario ΚΛΗΘΗΚΕ!");
         StopAllCoroutines();
         currentScore = 0;
         flags.Clear();
         currentNodeId = "n1_start";
+        Debug.Log("Ξεκινάω StartScenario με currentNodeId: " + currentNodeId);
         StartCoroutine(StartScenario());
     }
     
     public void GoToNode(string nodeId)
     {
-        if (ScenarioLoader.Instance == null || ScenarioLoader.Instance.CurrentScenario == null) return;
+        Debug.Log("GoToNode: " + nodeId);
+        
+        if (ScenarioLoader.Instance == null || ScenarioLoader.Instance.CurrentScenario == null)
+        {
+            Debug.LogError("ScenarioLoader ή CurrentScenario είναι NULL!");
+            return;
+        }
         
         NodeData node = ScenarioLoader.Instance.CurrentScenario.rules.nodes.Find(n => n.id == nodeId);
         
         if (node == null)
         {
-            Debug.LogError("❌ Δεν βρέθηκε node: " + nodeId);
+            Debug.LogError("Δεν βρέθηκε node: " + nodeId);
+            Debug.LogError("Διαθέσιμα nodes: " + string.Join(", ", ScenarioLoader.Instance.CurrentScenario.rules.nodes.Select(n => n.id)));
             return;
         }
         
@@ -77,7 +86,7 @@ public class ScenarioEngine : MonoBehaviour
         currentNode = node;
         currentNodeId = nodeId;
         
-        Debug.Log("📖 Node: " + node.id + " (" + node.type + ")");
+        Debug.Log("Node: " + node.id + " (" + node.type + ")");
         
         if (GameLogger.Instance != null)
             GameLogger.Instance.LogEvent("NODE_ENTER", "Node: " + node.id + " (" + node.type + ")");
@@ -190,12 +199,12 @@ public class ScenarioEngine : MonoBehaviour
                 GameLogger.Instance.LogEvent("GATE_BLOCKED", "Αποτυχία gate: " + node.id);
             
             if (nodeText != null)
-                nodeText.text = "⚠️ Ελλιπής τεκμηρίωση!\n\n" +
+                nodeText.text = "Ελλιπής τεκμηρίωση!\n\n" +
                                "Πρέπει να συμπληρώσετε τα εξής πεδία:\n" +
                                missingFields + "\n" + node.feedback_blocked;
             
             if (ToastManager.Instance != null)
-                ToastManager.Instance.ShowToastStyled("⚠️ Ελλιπής τεκμηρίωση!", "warning");
+                ToastManager.Instance.ShowToastStyled("Ελλιπής τεκμηρίωση!", "warning");
             
             return;
         }
@@ -207,7 +216,7 @@ public class ScenarioEngine : MonoBehaviour
             nodeText.text = node.feedback_success;
         
         if (ToastManager.Instance != null)
-            ToastManager.Instance.ShowToastStyled("✅ " + node.feedback_success, "success");
+            ToastManager.Instance.ShowToastStyled(node.feedback_success, "success");
         
         if (node.effects_on_pass != null)
         {
@@ -226,12 +235,12 @@ public class ScenarioEngine : MonoBehaviour
     
     void ShowEnd(NodeData node)
     {
-        Debug.Log("🔥🔥🔥 ShowEnd ΚΛΗΘΗΚΕ! Node: " + node.id);
+        Debug.Log("ShowEnd ΚΛΗΘΗΚΕ! Node: " + node.id);
         
         if (continueButton != null) continueButton.gameObject.SetActive(false);
         if (optionsContainer != null) optionsContainer.SetActive(false);
         
-        Debug.Log("🏁 Τέλος σεναρίου! Σκορ: " + currentScore);
+        Debug.Log("Τέλος σεναρίου! Σκορ: " + currentScore);
         
         if (GameLogger.Instance != null)
         {
@@ -239,17 +248,17 @@ public class ScenarioEngine : MonoBehaviour
             GameLogger.Instance.ExportToJSON();
         }
         
-        Debug.Log("🔥 Ψάχνω DebriefManager...");
+        Debug.Log("Ψάχνω DebriefManager...");
         DebriefManager debrief = FindObjectOfType<DebriefManager>(true);
         
         if (debrief != null)
         {
-            Debug.Log("🔥 DebriefManager βρέθηκε, καλώ ShowDebrief()");
+            Debug.Log("DebriefManager βρέθηκε, καλώ ShowDebrief()");
             debrief.ShowDebrief();
         }
         else
         {
-            Debug.LogError("❌ DebriefManager δεν βρέθηκε!");
+            Debug.LogError("DebriefManager δεν βρέθηκε!");
         }
     }
     
@@ -324,7 +333,7 @@ public class ScenarioEngine : MonoBehaviour
         {
             if (timerText != null)
             {
-                timerText.text = "⏱️ " + remaining + "s";
+                timerText.text = remaining + "s";
                 timerText.color = remaining <= 10 ? Color.red : Color.white;
             }
             

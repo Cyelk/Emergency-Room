@@ -26,12 +26,12 @@ public class ScenarioLoader : MonoBehaviour
             string jsonContent = File.ReadAllText(path);
             CurrentScenario = JsonUtility.FromJson<ScenarioData>(jsonContent);
             
-            Debug.Log("✅ Σενάριο φορτώθηκε: " + CurrentScenario.title);
-            Debug.Log("📊 Nodes: " + CurrentScenario.rules.nodes.Count);
+            Debug.Log("Σενάριο φορτώθηκε: " + CurrentScenario.title);
+            Debug.Log("Nodes: " + CurrentScenario.rules.nodes.Count);
         }
         else
         {
-            Debug.LogError("❌ Δεν βρέθηκε το αρχείο: " + path);
+            Debug.LogError("Δεν βρέθηκε το αρχείο: " + path);
         }
     }
 }

@@ -1,0 +1,160 @@
+{
+    "entries": [
+        {
+            "timestamp": "2026-09-20 00:34:16",
+            "eventType": "SESSION_START",
+            "details": "Έναρξη σεναρίου: scenario.json",
+            "scoreAtTime": 0
+        },
+        {
+            "timestamp": "2026-09-20 00:34:17",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n2_initial_decision (decision)",
+            "scoreAtTime": 0
+        },
+        {
+            "timestamp": "2026-09-20 00:34:18",
+            "eventType": "OPTION_SELECTED",
+            "details": "Επιλογή: Άμεση Αξιολόγηση Ασθενούς (Score: 10)",
+            "scoreAtTime": 10
+        },
+        {
+            "timestamp": "2026-09-20 00:34:18",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n3_intervention (decision)",
+            "scoreAtTime": 10
+        },
+        {
+            "timestamp": "2026-09-20 00:34:20",
+            "eventType": "VITALS_CHANGE",
+            "details": "SpO2: 94%, HR: 100 bpm, BP: 135/85, RR: 22",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 00:34:20",
+            "eventType": "OPTION_SELECTED",
+            "details": "Επιλογή: Αύξηση FiO2 (100%) (Score: 20)",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 00:34:20",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n4_gate_documentation_1 (gate)",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 00:34:21",
+            "eventType": "GATE_BLOCKED",
+            "details": "Αποτυχία gate: n4_gate_documentation_1",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 00:34:31",
+            "eventType": "VALIDATION",
+            "details": "ΝΑΙ observation: 'κυάνωση' (+10)",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 00:34:31",
+            "eventType": "VALIDATION",
+            "details": "ΝΑΙ fiO2_setting: '100%' (+10)",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 00:34:31",
+            "eventType": "EHR_SUBMIT",
+            "details": "Επιτυχής υποβολή",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 00:34:32",
+            "eventType": "GATE_PASSED",
+            "details": "Επιτυχία gate: n4_gate_documentation_1",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 00:34:32",
+            "eventType": "GATE_PASSED",
+            "details": "Επιτυχία gate: n4_gate_documentation_1",
+            "scoreAtTime": 40
+        },
+        {
+            "timestamp": "2026-09-20 00:34:33",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n5_reassessment (message)",
+            "scoreAtTime": 50
+        },
+        {
+            "timestamp": "2026-09-20 00:34:34",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n6_escalation_decision (decision)",
+            "scoreAtTime": 50
+        },
+        {
+            "timestamp": "2026-09-20 00:34:34",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n5_reassessment (message)",
+            "scoreAtTime": 50
+        },
+        {
+            "timestamp": "2026-09-20 00:34:35",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n6_escalation_decision (decision)",
+            "scoreAtTime": 50
+        },
+        {
+            "timestamp": "2026-09-20 00:34:36",
+            "eventType": "OPTION_SELECTED",
+            "details": "Επιλογή: Κλήση Ιατρού (Κλιμάκωση) (Score: 10)",
+            "scoreAtTime": 60
+        },
+        {
+            "timestamp": "2026-09-20 00:34:36",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n7_gate_documentation_2 (gate)",
+            "scoreAtTime": 60
+        },
+        {
+            "timestamp": "2026-09-20 00:34:49",
+            "eventType": "VALIDATION",
+            "details": "ΝΑΙ recipient: 'ιατρός' (+10)",
+            "scoreAtTime": 60
+        },
+        {
+            "timestamp": "2026-09-20 00:34:49",
+            "eventType": "VALIDATION",
+            "details": "ΝΑΙ outcome: 'αναφορά' (+5)",
+            "scoreAtTime": 60
+        },
+        {
+            "timestamp": "2026-09-20 00:34:49",
+            "eventType": "VALIDATION",
+            "details": "ΝΑΙ reason: 'υποξαιμία' (+10)",
+            "scoreAtTime": 60
+        },
+        {
+            "timestamp": "2026-09-20 00:34:49",
+            "eventType": "EHR_SUBMIT",
+            "details": "Επιτυχής υποβολή",
+            "scoreAtTime": 60
+        },
+        {
+            "timestamp": "2026-09-20 00:34:50",
+            "eventType": "GATE_PASSED",
+            "details": "Επιτυχία gate: n7_gate_documentation_2",
+            "scoreAtTime": 60
+        },
+        {
+            "timestamp": "2026-09-20 00:34:51",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n8_end_scenario (end)",
+            "scoreAtTime": 65
+        },
+        {
+            "timestamp": "2026-09-20 00:34:51",
+            "eventType": "SESSION_END",
+            "details": "Τέλος σεναρίου - Σκορ: 65",
+            "scoreAtTime": 65
+        }
+    ]
+}

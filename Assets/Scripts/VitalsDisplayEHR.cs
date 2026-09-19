@@ -29,7 +29,7 @@ public class VitalsDisplayEHR : MonoBehaviour
     {
         if (vitalsText != null && VitalsData.Instance != null)
         {
-            vitalsText.text = "📊 ΖΩΤΙΚΑ ΣΗΜΕΙΑ\n" + VitalsData.Instance.GetVitalsText();
+            vitalsText.text = "ΖΩΤΙΚΑ ΣΗΜΕΙΑ\n" + VitalsData.Instance.GetVitalsText();
             vitalsText.color = VitalsData.Instance.GetSpO2Color();
         }
     }
