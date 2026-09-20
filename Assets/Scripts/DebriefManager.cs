@@ -44,16 +44,16 @@ public class DebriefManager : MonoBehaviour
     {
         if (debriefPanel == null)
         {
-            Debug.LogError("❌ debriefPanel είναι NULL!");
+            Debug.LogError("debriefPanel είναι NULL!");
             return;
         }
         
-        Debug.Log("📋 ShowDebrief καλέστηκε");
+        Debug.Log("ShowDebrief καλέστηκε");
         
         if (ehrPanel != null)
         {
             ehrPanel.SetActive(false);
-            Debug.Log("📋 EHR Panel έκλεισε");
+            Debug.Log("EHR Panel έκλεισε");
         }
         
         debriefPanel.SetActive(true);
@@ -79,7 +79,7 @@ public class DebriefManager : MonoBehaviour
         UpdateDecisionPath();
         UpdateDocumentation();
         
-        Debug.Log("📋 Debrief άνοιξε");
+        Debug.Log("Debrief άνοιξε");
     }
     
     void UpdateScore()

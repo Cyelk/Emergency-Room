@@ -240,7 +240,7 @@ public class ScenarioEngine : MonoBehaviour
         if (continueButton != null) continueButton.gameObject.SetActive(false);
         if (optionsContainer != null) optionsContainer.SetActive(false);
         
-        Debug.Log("🏁 Τέλος σεναρίου! Σκορ: " + currentScore);
+        Debug.Log("Τέλος σεναρίου! Σκορ: " + currentScore);
         
         if (GameLogger.Instance != null)
         {
