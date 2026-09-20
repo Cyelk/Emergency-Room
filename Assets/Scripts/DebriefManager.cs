@@ -42,25 +42,44 @@ public class DebriefManager : MonoBehaviour
     
     public void ShowDebrief()
     {
-        if (debriefPanel == null) return;
+        if (debriefPanel == null)
+        {
+            Debug.LogError("❌ debriefPanel είναι NULL!");
+            return;
+        }
         
-        Debug.Log("debriefPanel parent: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.name : "NULL (αποκολλημένο!)"));
-        Debug.Log("debriefPanel root: " + debriefPanel.transform.root.name);
-        Debug.Log("debriefPanel sibling index: " + debriefPanel.transform.GetSiblingIndex());
-        Debug.Log("debriefPanel scene: " + debriefPanel.scene.name);
+        Debug.Log("📋 ShowDebrief καλέστηκε");
         
         if (ehrPanel != null)
+        {
             ehrPanel.SetActive(false);
+            Debug.Log("📋 EHR Panel έκλεισε");
+        }
         
         debriefPanel.SetActive(true);
         debriefPanel.transform.SetAsLastSibling();
         
-        Debug.Log("debriefPanel parent ΜΕΤΑ: " + (debriefPanel.transform.parent != null ? debriefPanel.transform.parent.name : "NULL"));
-        Debug.Log("debriefPanel root ΜΕΤΑ: " + debriefPanel.transform.root.name);
+        // ΚΑΝΕ ΤΟ ΟΡΑΤΟ
+        CanvasGroup cg = debriefPanel.GetComponent<CanvasGroup>();
+        if (cg == null) cg = debriefPanel.AddComponent<CanvasGroup>();
+        cg.alpha = 1f;
+        cg.interactable = true;
+        cg.blocksRaycasts = true;
+        
+        // ΕΠΑΝΑΦΕΡΕ ΤΟ IMAGE
+        Image img = debriefPanel.GetComponent<Image>();
+        if (img != null)
+        {
+            Color c = img.color;
+            c.a = 1f;
+            img.color = c;
+        }
         
         UpdateScore();
         UpdateDecisionPath();
         UpdateDocumentation();
+        
+        Debug.Log("📋 Debrief άνοιξε");
     }
     
     void UpdateScore()

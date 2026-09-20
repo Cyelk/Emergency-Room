@@ -240,13 +240,21 @@ public class ScenarioEngine : MonoBehaviour
         if (continueButton != null) continueButton.gameObject.SetActive(false);
         if (optionsContainer != null) optionsContainer.SetActive(false);
         
-        Debug.Log("Τέλος σεναρίου! Σκορ: " + currentScore);
+        Debug.Log("🏁 Τέλος σεναρίου! Σκορ: " + currentScore);
         
         if (GameLogger.Instance != null)
         {
             GameLogger.Instance.LogEvent("SESSION_END", "Τέλος σεναρίου - Σκορ: " + currentScore);
             GameLogger.Instance.ExportToJSON();
         }
+        
+        // Καθυστέρηση 3 δευτερολέπτων πριν το Debrief
+        StartCoroutine(ShowDebriefAfterDelay(2f));
+    }
+
+    IEnumerator ShowDebriefAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
         
         Debug.Log("Ψάχνω DebriefManager...");
         DebriefManager debrief = FindObjectOfType<DebriefManager>(true);

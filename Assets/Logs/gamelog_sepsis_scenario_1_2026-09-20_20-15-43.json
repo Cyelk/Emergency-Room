@@ -1,0 +1,118 @@
+{
+    "entries": [
+        {
+            "timestamp": "2026-09-20 20:06:22",
+            "eventType": "SESSION_START",
+            "details": "Έναρξη σεναρίου",
+            "scoreAtTime": 0
+        },
+        {
+            "timestamp": "2026-09-20 20:06:22",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n1_start (message)",
+            "scoreAtTime": 0
+        },
+        {
+            "timestamp": "2026-09-20 20:06:26",
+            "eventType": "HOTSPOT_INTERACTION",
+            "details": "Κλικ στο: Vital Signs",
+            "scoreAtTime": 0
+        },
+        {
+            "timestamp": "2026-09-20 20:09:37",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n2_initial_decision (decision)",
+            "scoreAtTime": 0
+        },
+        {
+            "timestamp": "2026-09-20 20:09:55",
+            "eventType": "OPTION_SELECTED",
+            "details": "Επιλογή: Άμεση Αξιολόγηση Ασθενούς (Score: 10)",
+            "scoreAtTime": 10
+        },
+        {
+            "timestamp": "2026-09-20 20:09:55",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n3_intervention (decision)",
+            "scoreAtTime": 10
+        },
+        {
+            "timestamp": "2026-09-20 20:10:24",
+            "eventType": "VITALS_CHANGE",
+            "details": "SpO2: 94%, HR: 100 bpm, BP: 135/85, RR: 22",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 20:10:24",
+            "eventType": "OPTION_SELECTED",
+            "details": "Επιλογή: Αύξηση FiO2 (100%) (Score: 20)",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 20:10:24",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n4_gate_documentation_1 (gate)",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 20:15:35",
+            "eventType": "GATE_BLOCKED",
+            "details": "Αποτυχία gate: n4_gate_documentation_1",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 20:15:37",
+            "eventType": "VALIDATION",
+            "details": "ΟΧΙ observation: 'Ες' (-5)",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 20:15:37",
+            "eventType": "VALIDATION",
+            "details": "ΟΧΙ fiO2_setting: 'ςΕΔ' (-5)",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 20:15:37",
+            "eventType": "EHR_SUBMIT",
+            "details": "Επιτυχής υποβολή",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 20:15:38",
+            "eventType": "GATE_PASSED",
+            "details": "Επιτυχία gate: n4_gate_documentation_1",
+            "scoreAtTime": 30
+        },
+        {
+            "timestamp": "2026-09-20 20:15:40",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n5_reassessment (message)",
+            "scoreAtTime": 40
+        },
+        {
+            "timestamp": "2026-09-20 20:15:40",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n6_escalation_decision (decision)",
+            "scoreAtTime": 40
+        },
+        {
+            "timestamp": "2026-09-20 20:15:43",
+            "eventType": "OPTION_SELECTED",
+            "details": "Επιλογή: Όχι, συνεχίζω παρακολούθηση (Score: 0)",
+            "scoreAtTime": 40
+        },
+        {
+            "timestamp": "2026-09-20 20:15:43",
+            "eventType": "NODE_ENTER",
+            "details": "Node: n8_end_scenario (end)",
+            "scoreAtTime": 40
+        },
+        {
+            "timestamp": "2026-09-20 20:15:43",
+            "eventType": "SESSION_END",
+            "details": "Τέλος σεναρίου - Σκορ: 40",
+            "scoreAtTime": 40
+        }
+    ]
+}
